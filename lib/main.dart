@@ -135,9 +135,7 @@ class MyHomePageState extends State<MyHomePage>
                       color: Colors.red,
                       progress: _iconAnimationController.view),
                   onPressed: () {
-                    setState(() {
-                      onIconPressed();
-                    });
+                    onIconPressed();
                   }),
             ),
           )
