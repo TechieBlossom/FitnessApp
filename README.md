@@ -1,16 +1,16 @@
 # fitness_app
 
-A new Flutter project.
+Fitness App mock from Dribbble
 
-## Getting Started
+Started this project as a design mock up for Fitness App 
+**Design: Fitness App Mock** - https://dribbble.com/shots/5698597-Fitness-App
 
-This project is a starting point for a Flutter application.
+*This project uses Dart 2*
 
-A few resources to get you started if this is your first Flutter project:
+## Video Series
 
-- [Lab: Write your first Flutter app](https://flutter.io/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.io/docs/cookbook)
+**Part 1-** https://youtu.be/4lHDXcOXOYc
+In this video, you will see how **radial progress** is implemented with *gradient and animation*. Also, you will see how *Animated Icon* works.
 
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.io/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+## Screenshots
+<table style={border:"none"}><tr><td><img src="https://github.com/TechieBlossom/FitnessApp/blob/master/screenshots/part1.png" alt="Home Screen" width="300"/></td></tr></table>
