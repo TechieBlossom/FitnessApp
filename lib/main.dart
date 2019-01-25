@@ -1,11 +1,12 @@
 import 'package:fitness_app/blocs/home_page_bloc.dart';
 import 'package:fitness_app/date_utils.dart';
 import 'package:fitness_app/radial_progress.dart';
+import 'package:fitness_app/show_graph.dart';
 import 'package:fitness_app/themes/colors.dart';
 import 'package:fitness_app/top_bar.dart';
 import 'package:flutter/material.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(ShowGraph());
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
