@@ -127,6 +127,7 @@ class MyHomePageState extends State<MyHomePage>
             left: 0,
             right: 0,
             child: Container(
+              alignment: Alignment.bottomCenter,
               decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(color: Colors.red, width: 4.0)),
@@ -160,9 +161,9 @@ class MyHomePageState extends State<MyHomePage>
 class MonthlyStatusListing extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 32.0),
-      child: Row(
+    return Flexible(
+      child:
+      Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
