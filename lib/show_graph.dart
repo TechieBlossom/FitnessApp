@@ -34,8 +34,8 @@ class _ShowGraphState extends State<ShowGraph> with SingleTickerProviderStateMix
               _graphAnimationController.forward();
             },
             child: Graph(
-              animationController: _graphAnimationController,
-              values: dayData
+              graphAnimationController: _graphAnimationController,
+              values: runningDayData
             ),
           ),
         ),

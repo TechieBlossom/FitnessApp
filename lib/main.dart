@@ -1,12 +1,12 @@
+import 'package:fitness_app/activities_widget.dart';
 import 'package:fitness_app/blocs/home_page_bloc.dart';
 import 'package:fitness_app/date_utils.dart';
 import 'package:fitness_app/radial_progress.dart';
-import 'package:fitness_app/show_graph.dart';
 import 'package:fitness_app/themes/colors.dart';
 import 'package:fitness_app/top_bar.dart';
 import 'package:flutter/material.dart';
 
-void main() => runApp(ShowGraph());
+void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -26,16 +26,14 @@ class MyHomePage extends StatefulWidget {
   MyHomePageState createState() => MyHomePageState();
 }
 
-class MyHomePageState extends State<MyHomePage>
-    with SingleTickerProviderStateMixin {
+class MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin {
   HomePageBloc _homePageBloc;
   AnimationController _iconAnimationController;
 
   @override
   void initState() {
     _homePageBloc = HomePageBloc();
-    _iconAnimationController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 300));
+    _iconAnimationController = AnimationController(vsync: this, duration: Duration(milliseconds: 300));
     super.initState();
   }
 
@@ -81,11 +79,7 @@ class MyHomePageState extends State<MyHomePage>
                                 children: <Widget>[
                                   Text(
                                     formatterDayOfWeek.format(snapshot.data),
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 24.0,
-                                        color: Colors.white,
-                                        letterSpacing: 1.2),
+                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24.0, color: Colors.white, letterSpacing: 1.2),
                                   ),
                                   Text(
                                     formatterDate.format(snapshot.data),
@@ -118,37 +112,39 @@ class MyHomePageState extends State<MyHomePage>
                   )
                 ],
               ),
+              SizedBox(
+                height: 10.0,
+              ),
               RadialProgress(),
               MonthlyStatusListing()
             ],
           ),
+          ActivitiesWidget(_iconAnimationController, MediaQuery.of(context).size.height),
           Positioned(
-            bottom: 50,
+            bottom: 30,
             left: 0,
             right: 0,
             child: Container(
-              decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(color: Colors.red, width: 4.0)),
+              alignment: Alignment.center,
+              decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: Colors.red, width: 4.0)),
               child: IconButton(
                   icon: AnimatedIcon(
-                      icon: AnimatedIcons.menu_close,
-                      color: Colors.red,
-                      progress: _iconAnimationController.view),
+                    icon: AnimatedIcons.menu_close,
+                    color: Colors.red,
+                    progress: _iconAnimationController.view,
+                  ),
                   onPressed: () {
                     onIconPressed();
                   }),
             ),
-          )
+          ),
         ],
       ),
     );
   }
 
   void onIconPressed() {
-    animationStatus
-        ? _iconAnimationController.reverse()
-        : _iconAnimationController.forward();
+    animationStatus ? _iconAnimationController.reverse() : _iconAnimationController.forward();
   }
 
   bool get animationStatus {
@@ -204,17 +200,11 @@ class MonthlyStatusRow extends StatelessWidget {
         children: <Widget>[
           Text(
             monthYear,
-            style: TextStyle(
-                color: Colors.blue,
-                fontWeight: FontWeight.bold,
-                fontSize: 20.0),
+            style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 20.0),
           ),
           Text(
             status,
-            style: TextStyle(
-                color: Colors.grey,
-                fontStyle: FontStyle.italic,
-                fontSize: 16.0),
+            style: TextStyle(color: Colors.grey, fontStyle: FontStyle.italic, fontSize: 16.0),
           ),
         ],
       ),

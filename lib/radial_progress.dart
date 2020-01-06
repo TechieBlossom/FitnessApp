@@ -76,7 +76,7 @@ class _RadialProgressState extends State<RadialProgress>
               Text(
                 'CALORIES BURN',
                 style: TextStyle(
-                    fontSize: 14.0, color: Colors.blue, letterSpacing: 1.5),
+                    fontSize: 14.0, color: Colors.cyan, letterSpacing: 1.5),
               ),
             ],
           ),

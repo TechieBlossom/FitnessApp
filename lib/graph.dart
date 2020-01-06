@@ -1,44 +1,43 @@
+import 'dart:async';
+
 import 'package:fitness_app/fitness_data.dart';
 import 'package:fitness_app/themes/colors.dart';
 import 'package:flutter/material.dart';
 
 class Graph extends StatelessWidget {
   final double height;
+  final AnimationController graphAnimationController;
   final List<GraphData> values;
-  final AnimationController animationController;
 
-  Graph({this.animationController, this.height = 120, this.values});
+  Graph({this.graphAnimationController, this.height = 120, this.values});
 
   @override
   Widget build(BuildContext context) {
+    GraphData _maxGraphData = values.reduce((current, next) => (next.compareTo(current) >= 1) ? next : current);
     return Container(
       height: height,
-      padding: EdgeInsets.symmetric(horizontal: 32.0),
+      width: MediaQuery.of(context).size.width,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: _buildBars(values),
+        children: [
+          for (var graphData in values)
+            GraphBar(
+              key: GlobalKey(debugLabel: _maxGraphData.value.toString()),
+              height: height,
+              percentage: graphData.value / _maxGraphData.value,
+              graphBarAnimationController: graphAnimationController,
+            ),
+        ],
       ),
     );
-  }
-
-  _buildBars(List<GraphData> values) {
-    List<GraphBar> _bars = List();
-    GraphData _maxGraphData = values.reduce(
-        (current, next) => (next.compareTo(current) >= 1) ? next : current);
-    values.forEach((graphData) {
-      double percentage = graphData.value / _maxGraphData.value;
-      _bars.add(GraphBar(height, percentage, animationController));
-    });
-
-    return _bars;
   }
 }
 
 class GraphBar extends StatefulWidget {
   final double height, percentage;
-  final AnimationController _graphBarAnimationController;
+  final AnimationController graphBarAnimationController;
 
-  GraphBar(this.height, this.percentage, this._graphBarAnimationController);
+  const GraphBar({Key key, this.height, this.percentage, this.graphBarAnimationController}) : super(key: key);
 
   @override
   _GraphBarState createState() => _GraphBarState();
@@ -46,24 +45,46 @@ class GraphBar extends StatefulWidget {
 
 class _GraphBarState extends State<GraphBar> {
   Animation<double> _percentageAnimation;
+  StreamController<double> _percentageAnimationStreamController;
+  Stream<double> _percentageAnimationStream;
+  Sink<double> _percentageAnimationSink;
 
   @override
   void initState() {
     super.initState();
-    _percentageAnimation = Tween<double>(begin: 0, end: widget.percentage)
-        .animate(widget._graphBarAnimationController);
+    _percentageAnimationStreamController = StreamController<double>();
+    _percentageAnimationStream = _percentageAnimationStreamController.stream;
+    _percentageAnimationSink = _percentageAnimationStreamController.sink;
+    _percentageAnimation = Tween<double>(begin: 0, end: widget.percentage).animate(widget.graphBarAnimationController);
     _percentageAnimation.addListener(() {
-      setState(() {});
+      if (mounted) {
+        _percentageAnimationSink.add(_percentageAnimation.value);
+      }
     });
+    if (mounted) {
+      _percentageAnimationSink.add(widget.percentage);
+    }
+  }
+
+  @override
+  void dispose() {
+    _percentageAnimationStreamController.close();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      painter: BarPainter(_percentageAnimation.value),
-      child: Container(
-        height: widget.height,
-      ),
+    return StreamBuilder(
+      stream: _percentageAnimationStream,
+      initialData: 0.0,
+      builder: (context, AsyncSnapshot<double> snapshot) {
+        return CustomPaint(
+          painter: BarPainter(snapshot.data),
+          child: Container(
+            height: widget.height,
+          ),
+        );
+      },
     );
   }
 }
@@ -78,7 +99,7 @@ class BarPainter extends CustomPainter {
     Paint greyPaint = Paint()
       ..color = greyColor
       ..strokeCap = StrokeCap.round
-      ..strokeWidth = 5.0;
+      ..strokeWidth = 6.0;
 
     Offset topPoint = Offset(0, 0);
     Offset bottomPoint = Offset(0, (size.height + 20));
@@ -87,24 +108,20 @@ class BarPainter extends CustomPainter {
     canvas.drawLine(topPoint, bottomPoint, greyPaint);
 
     Paint filledPaint = Paint()
-      ..shader = LinearGradient(
-        colors: [Colors.pink.shade500, Colors.blue.shade500],
-        begin: Alignment.topCenter
-      ).createShader(Rect.fromPoints(topPoint, bottomPoint))
+      ..shader = LinearGradient(colors: [Colors.pink.shade500, Colors.blue.shade500], begin: Alignment.topCenter)
+          .createShader(Rect.fromPoints(topPoint, bottomPoint))
       ..strokeCap = StrokeCap.round
-      ..strokeWidth = 5.0;
+      ..strokeWidth = 6.0;
 
     double filledHeight = percentage * size.height;
     double filledHalfHeight = filledHeight / 2;
 
-    canvas.drawLine(
-        centerPoint, Offset(0, centerPoint.dy - filledHalfHeight), filledPaint);
-    canvas.drawLine(
-        centerPoint, Offset(0, centerPoint.dy + filledHalfHeight), filledPaint);
+    canvas.drawLine(centerPoint, Offset(0, centerPoint.dy - filledHalfHeight), filledPaint);
+    canvas.drawLine(centerPoint, Offset(0, centerPoint.dy + filledHalfHeight), filledPaint);
   }
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) {
-    return true;
+    return oldDelegate != this;
   }
 }
